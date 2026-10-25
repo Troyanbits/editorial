@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LinkedIn Editorial Studio - José Gabriel Córdoba</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        linkedin: {
+                            blue: '#0A66C2',
+                            bg: '#F3F2EF',
+                            card: '#FFFFFF',
+                            text: '#000000e6',
+                            muted: '#00000099'
+                        },
+                        trantor: {
+                            bg: '#E2E4E8',
+                            card: '#FFFFFF',
+                            cardInner: '#F3F4F6',
+                            border: 'rgba(0, 0, 0, 0.08)',
+                            mint: '#A7F3D0',
+                            gold: '#FDE68A',
+                            textMain: '#0F172A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #E2E4E8;
+            color: #0F172A;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .trantor-card {
+            background-color: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 1.75rem;
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s ease;
+        }
+
+        .trantor-card-inner {
+            background-color: #F3F4F6;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 1.25rem;
+        }
+
+        .tab-btn {
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background-color: #0F172A;
+            color: #FFFFFF;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #E2E4E8; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+        .linkedin-post-content {
+            white-space: pre-wrap;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #000000e6;
+        }
+        .linkedin-post-content .hashtag {
+            color: #0A66C2;
+            font-weight: 600;
+        }
+        .linkedin-post-content .bullet {
+            color: #059669;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 sm:p-5 md:p-8 max-w-7xl mx-auto">
+
+    <!-- Header Principal -->
+    <header class="w-full trantor-card p-4 sm:p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5 w-full sm:w-auto">
+            <div class="w-12 h-12 rounded-2xl bg-slate-900 text-amber-200 flex items-center justify-center font-extrabold text-base shadow-sm shrink-0">
+                JGC
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-sm sm:text-base font-extrabold tracking-wide text-slate-900 uppercase">Estudio Editorial LinkedIn</h1>
+                    <span class="bg-blue-100 text-blue-800 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border border-blue-200">
+                        ESTILO Y REGLAS ACTIVAS
+                    </span>
+                </div>
+                <p class="text-[11px] sm:text-xs text-slate-600 font-semibold">
+                    José Gabriel Córdoba · Compliance Officer | CPAML | VA Compliance
+                </p>
+            </div>
+        </div>
+
+        <!-- Indicador y Configuración API Key -->
+        <div class="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
+            <button onclick="openApiModal()" class="px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-mono font-bold transition border border-slate-200 flex items-center gap-2">
+                <span>🔑</span> <span id="api-key-status-text">Falta conexión</span>
+            </button>
+            <div class="flex items-center gap-2 bg-emerald-100 px-3 py-1.5 rounded-2xl border border-emerald-200 text-[11px] text-emerald-900 font-mono font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>MOTOR GOOGLE SEARCH OK</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full my-auto">
+
+        <!-- Columna Izquierda: Panel de Control y Parámetros (5 Cols) -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+
+            <div class="trantor-card p-6 flex flex-col justify-between h-full space-y-5">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold uppercase font-mono text-slate-500">1. SELECCIONA EL FORMATO</span>
+                        <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-600 font-mono">AUTOMÁTICO</span>
+                    </div>
+
+                    <!-- Selector de Comandos -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="selectCommand('standard')" id="cmd-standard" class="cmd-btn active px-3 py-2.5 rounded-xl border text-xs font-bold text-left bg-slate-900 text-white border-slate-900">
+                            ✍️ Post Estándar
+                            <span class="block text-[9px] opacity-75 font-normal">400 - 600 Palabras</span>
+                        </button>
+
+                        <button onclick="selectCommand('/corto')" id="cmd-corto" class="cmd-btn px-3 py-2.5 rounded-xl border text-xs font-bold text-left bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
+                            ⚡ /corto
+                            <span class="block text-[9px] text-slate-500 font-normal">Máx 200 Palabras</span>
+                        </button>
+
+                        <button onclick="selectCommand('/caso')" id="cmd-caso" class="cmd-btn px-3 py-2.5 rounded-xl border text-xs font-bold text-left bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
+                            🏢 /caso
+                            <span class="block text-[9px] text-slate-500 font-normal">Análisis Multa y Regulador</span>
+                        </button>
+
+                        <button onclick="selectCommand('/actualidad')" id="cmd-actualidad" class="cmd-btn px-3 py-2.5 rounded-xl border text-xs font-bold text-left bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
+                            📰 /actualidad
+                            <span class="block text-[9px] text-slate-500 font-normal">Top 5 Noticias Recientes</span>
+                        </button>
+                    </div>
+
+                    <!-- Área de Texto / Tema de Entrada -->
+                    <div class="mt-5 space-y-2">
+                        <label class="block text-xs font-bold text-slate-900">2. Tema, Caso, Noticia o Prompt:</label>
+                        <textarea 
+                            id="topic-input" 
+                            rows="5" 
+                            placeholder="Ej: Sanción a Binance por faltas en ALD, multas recientes de FinCEN, uso de tarjetas de regalo para lavado de dinero..."
+                            class="w-full p-4 rounded-2xl trantor-card-inner text-xs font-mono text-slate-900 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition resize-none"
+                        >Multa de FinCEN y DOJ a TD Bank por fallas estructurales en el programa de prevención de blanqueo de capitales ALD</textarea>
+                    </div>
+
+                    <!-- Hechos verificados (alternativa a la búsqueda web) -->
+                    <div class="mt-4 space-y-2">
+                        <label class="block text-xs font-bold text-slate-900">3. Hechos verificados (opcional, recomendado si apagas la búsqueda web):</label>
+                        <textarea
+                            id="facts-input"
+                            rows="4"
+                            placeholder="Pega aquí fechas, montos, organismos y fuentes ya verificados. Si lo llenas, el post usará SOLO estos datos concretos."
+                            class="w-full p-4 rounded-2xl trantor-card-inner text-xs font-mono text-slate-900 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 transition resize-none"
+                        ></textarea>
+                    </div>
+
+                    <!-- Botones de Temas Sugeridos -->
+                    <div class="mt-3">
+                        <span class="text-[10px] text-slate-500 font-mono font-bold block mb-1.5">PREAJUSTES DE CONSULTA RÁPIDA:</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button onclick="setTopic('Multa de TD Bank por fallas en monitoreo de transacciones ALD')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] text-slate-700 font-medium">
+                                TD Bank Sanción
+                            </button>
+                            <button onclick="setTopic('Sanciones de OFAC y FinCEN por uso de mezcladores virtuales (Mixers) en 2025 2026')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] text-slate-700 font-medium">
+                                Mixers & Cripto
+                            </button>
+                            <button onclick="setTopic('Responsabilidad penal de Compliance Officers por no reportar ROS a tiempo')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] text-slate-700 font-medium">
+                                Responsabilidad CCO
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Toggle de Búsqueda Web -->
+                    <div class="mt-5 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🌐</span>
+                            <div>
+                                <span class="text-xs font-bold text-amber-900 block">Búsqueda Web Obligatoria</span>
+                                <span class="text-[10px] text-amber-800">Verifica datos frescos de 2025-2026 antes de escribir</span>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="web-search-toggle" checked class="w-4 h-4 accent-slate-900 rounded cursor-pointer" />
+                    </div>
+                </div>
+
+                <!-- Botón Principal de Generación -->
+                <button onclick="generatePost()" id="btn-generate" class="w-full mt-4 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-amber-200 font-mono text-xs font-bold transition shadow-lg flex items-center justify-center gap-2 active:scale-95">
+                    <span>⚡</span> Generar Publicación Estilo José Gabriel
+                </button>
+            </div>
+
+        </section>
+
+        <!-- Columna Derecha: Vista Previa LinkedIn y Auditoría (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- Card de Simulación de LinkedIn -->
+            <div class="trantor-card p-6 flex flex-col justify-between">
+                
+                <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                        <h2 class="text-xs font-bold uppercase font-mono tracking-wider text-slate-900">SIMULADOR FEED LINKEDIN</h2>
+                    </div>
+
+                    <!-- Contadores y Métricas -->
+                    <div class="flex items-center gap-2 font-mono text-[10px]">
+                        <span id="badge-words" class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold">0 Palabras</span>
+                        <span id="badge-time" class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold">⏱ 0 min lectura</span>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Replicando la Interfaz Oficial de LinkedIn -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 relative">
+                    <!-- LinkedIn Header Profile -->
+                    <div class="flex justify-between items-start">
+                        <div class="flex gap-3 items-center">
+                            <div class="w-12 h-12 rounded-full bg-slate-900 text-amber-200 flex items-center justify-center font-extrabold text-sm shadow-md shrink-0 border-2 border-amber-300">
+                                JGC
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <h3 class="text-xs sm:text-sm font-bold text-slate-900 leading-none">José Gabriel Córdoba</h3>
+                                    <span class="text-blue-600 text-[10px]">✔</span>
+                                </div>
+                                <p class="text-[11px] text-slate-500 leading-snug mt-0.5">Compliance Officer / Sector Valores | CPAML | VA Compliance</p>
+                                <p class="text-[10px] text-slate-400 font-mono mt-0.5">Ahora · 🌐 Público</p>
+                            </div>
+                        </div>
+                        <span class="text-slate-400 hover:text-slate-600 font-bold cursor-pointer text-sm">•••</span>
+                    </div>
+
+                    <!-- Contenido Generado del Post -->
+                    <div id="linkedin-output-display" class="linkedin-post-content p-2 min-h-[220px]">
+                        <p class="text-slate-400 italic text-center my-10 font-mono text-xs">
+                            [ Escribe tu tema a la izquierda y presiona "Generar Publicación" para ver el resultado aquí ]
+                        </p>
+                    </div>
+
+                    <!-- Footer Interactivo Simulado -->
+                    <div class="pt-3 border-t border-slate-100 flex justify-between text-slate-500 text-[11px] font-semibold px-2">
+                        <span class="flex items-center gap-1">👍 💡 👏 248</span>
+                        <span>42 comentarios · 18 compartidos</span>
+                    </div>
+                </div>
+
+                <!-- Lista de Verificación de Reglas Editoriales (Guardrails) -->
+                <div class="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+                    <span class="font-bold text-slate-900 block font-mono text-[11px] uppercase tracking-wider">🛡️ Auditoría de Reglas Editoriales:</span>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px] font-mono">
+                        <div id="check-url" class="p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                            <span>✓</span> Sin URLs en texto
+                        </div>
+                        <div id="check-length" class="p-2 rounded-xl bg-slate-200 text-slate-700 font-bold flex items-center gap-1">
+                            <span>⏳</span> Longitud adecuada
+                        </div>
+                        <div id="check-hook" class="p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                            <span>✓</span> Gancho potente
+                        </div>
+                        <div id="check-question" class="p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                            <span>✓</span> Pregunta incómoda
+                        </div>
+                        <div id="check-closing" class="p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                            <span>✓</span> Cierre contundente
+                        </div>
+                        <div id="check-hashtags" class="p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1">
+                            <span>✓</span> Máx 5 Hashtags
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botonera de Acciones (Copiar, Descargar, Historial) -->
+                <div class="flex flex-col sm:flex-row gap-3 mt-4 pt-3 border-t border-slate-100">
+                    <button onclick="copyToClipboard()" id="btn-copy-post" class="flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-200 text-xs font-bold transition flex items-center justify-center gap-2 font-mono shadow-md">
+                        <span>📋</span> Copiar para LinkedIn
+                    </button>
+                    <button onclick="downloadAsTxt()" class="py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-2 font-mono border border-slate-200">
+                        <span>💾</span> Guardar `.txt`
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal de Configuración de API Key -->
+    <div id="api-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 items-center justify-center hidden p-4">
+        <div class="trantor-card p-6 sm:p-8 max-w-md w-full border border-slate-200 relative shadow-2xl">
+            <button onclick="closeApiModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-base p-1">✕</button>
+            
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 border border-amber-200 flex items-center justify-center mx-auto mb-3 font-bold text-xl">🔑</div>
+                <h3 class="text-base font-bold text-slate-900">Conexión con ChatGPT (OpenAI)</h3>
+                <p class="text-xs text-slate-500 mt-1">La clave de OpenAI vive en tu servidor (Cloudflare), no en este archivo. Aquí solo conectas tu proxy.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-900 mb-1">URL del proxy:</label>
+                    <input type="url" id="proxy-url-input" placeholder="https://tu-proxy.up.railway.app"
+                        class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 transition" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-900 mb-1">Token de acceso:</label>
+                    <input type="password" id="proxy-token-input" placeholder="El mismo valor de APP_TOKEN en Cloudflare"
+                        class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 transition" />
+                    <p class="text-[10px] text-slate-400 mt-1">Se guarda solo en este navegador.</p>
+                </div>
+
+                <button onclick="saveApiKey()" class="w-full py-3 rounded-full bg-slate-900 text-amber-200 text-xs font-bold font-mono transition shadow-md">
+                    Guardar Configuración
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de Página -->
+    <footer class="w-full mt-10 py-5 border-t border-slate-300 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <span>© José Gabriel Córdoba · Asistente Editorial y Motor de Contenido para LinkedIn.</span>
+        <span class="font-mono text-[11px] bg-white px-3 py-1 rounded-full border border-slate-200">Motor ChatGPT (OpenAI) · búsqueda web opcional</span>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentCommand = 'standard';
+        let rawGeneratedText = '';
+        let verifiedMode = true; // false = post sin búsqueda web ni hechos verificados
+
+        // Motor: OpenAI (Responses API + herramienta web_search) a través de TU proxy (Cloudflare Worker).
+        // La clave de OpenAI vive solo en el servidor (variable OPENAI_API_KEY); nunca en este HTML.
+        // Modelos según developers.openai.com/api/docs/guides/tools-web-search (se prueba en este orden).
+        const OPENAI_MODELS = ["gpt-5.6", "gpt-5.5"];
+
+        function getProxyUrl() { return (localStorage.getItem('proxy_url') || '').trim().replace(/\/+$/, ''); }
+        function getProxyToken() { return (localStorage.getItem('proxy_token') || '').trim(); }
+        function isConfigured() { return !!(getProxyUrl() && getProxyToken()); }
+        function updateKeyStatus() {
+            document.getElementById('api-key-status-text').innerText = isConfigured() ? 'Conectado ✓' : 'Falta conexión';
+        }
+        // Escapa solo & < > (no comillas) para no romper la detección de #hashtags
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function extractText(body) {
+            return (body.output || [])
+                .filter(i => i.type === 'message')
+                .flatMap(m => m.content || [])
+                .filter(c => c.type === 'output_text')
+                .map(c => c.text).join('\n').trim();
+        }
+        function extractSources(body) {
+            const seen = new Set(); const out = [];
+            (body.output || []).filter(i => i.type === 'message').flatMap(m => m.content || []).forEach(c => {
+                (c.annotations || []).forEach(a => {
+                    if (a.type === 'url_citation' && /^https?:\/\//.test(a.url || '') && !seen.has(a.url)) {
+                        seen.add(a.url); out.push({ title: a.title || a.url, url: a.url });
+                    }
+                });
+            });
+            return out;
+        }
+        // El post no debe llevar links: se limpian los que el modelo agregue (las fuentes se muestran aparte).
+        function stripLinks(text) {
+            return text
+                // LinkedIn no interpreta markdown: se quitan negritas, encabezados y separadores
+                .replace(/\*\*([^*\n]+)\*\*/g, '$1')
+                .replace(/__([^_\n]+)__/g, '$1')
+                .replace(/^\s*[-*_]{3,}\s*$/gm, '')
+                .replace(/^#{1,6}\s+/gm, '')
+                .replace(/^\*([^*\n]+)\*$/gm, '$1')
+                .replace(/\s*\(\s*\[[^\]]*\]\(https?:\/\/[^)]*\)\s*\)/g, '')
+                .replace(/\[([^\]]+)\]\(https?:\/\/[^)]*\)/g, '$1')
+                .replace(/https?:\/\/\S+/g, '')
+                .replace(/\(\s*\)/g, '')
+                .replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+        }
+
+        const SYSTEM_PROMPT = `Eres el asistente editorial exclusivo de José Gabriel Córdoba,
+Compliance Officer y experto en AML/KYC con presencia activa en LinkedIn.
+
+Tu única función es redactar publicaciones para LinkedIn que suenen
+EXACTAMENTE como José Gabriel: con su voz, su estilo y su criterio profesional.
+
+═══════════════════════════════════════════════
+REGLA CRITICA — SIN LINKS EN EL TEXTO
+═══════════════════════════════════════════════
+NUNCA incluyas URLs, hipervínculos ni links dentro del post.
+Cita las fuentes de forma natural dentro del texto:
+CORRECTO: "Según el Departamento de Justicia de EE.UU., la multa fue de..."
+INCORRECTO: "([justice.gov](https://www.justice.gov/...))"
+
+═══════════════════════════════════════════════
+REGLA ABSOLUTA — BUSCA Y USA DATOS ACTUALES
+═══════════════════════════════════════════════
+La fecha actual es 2025-2026. Toda información debe ser actual.
+Prioriza noticias de los últimos 6 meses, casos recientes y regulaciones vigentes.
+
+═══════════════════════════════════════════════
+REGLA DE VERACIDAD (PRIORIDAD MÁXIMA)
+═══════════════════════════════════════════════
+- Solo afirmas hechos concretos (fechas, montos, organismos, hallazgos, cifras) si provienen de la búsqueda web o de los HECHOS VERIFICADOS que aporta el usuario.
+- Si no tienes datos verificados sobre un caso real, NO escribas como si conocieras sus detalles: redacta en términos generales sobre el tema, sin atribuir hechos específicos a entidades nombradas.
+- NUNCA atribuyas intenciones, motivos ni decisiones internas (por ejemplo "priorizó ganancias" o "recortó presupuesto") a una entidad o directivos nombrados. Las opiniones se presentan como opinión del autor, no como hallazgo.
+- No inventes plazos, porcentajes ni cifras de ejemplo presentados como si fueran del caso.
+- Entrega SOLO el texto del post, en texto plano: sin markdown (no uses **negritas**, #títulos ni líneas ---) y sin notas finales como "fuentes verificadas". Las fuentes las muestra la aplicación por separado.
+- Cuando atribuyas un hallazgo, nómbralo con su fuente exacta (por ejemplo "según la OCC" o "según FinCEN") y no mezcles lo que dijo un organismo con lo que dijo otro.
+
+═══════════════════════════════════════════════
+IDIOMA, LONGITUD Y FORMATO
+═══════════════════════════════════════════════
+- Siempre redactas en español.
+- Post estándar: entre 400 y 600 palabras (nunca menos de 400).
+- Post /corto: máximo 200 palabras.
+- Usa saltos de línea generosos entre secciones.
+- Al menos 3 puntos de análisis con 2-3 oraciones cada uno.
+
+═══════════════════════════════════════════════
+ESTILO Y ESTRUCTURA OBLIGATORIA
+═══════════════════════════════════════════════
+⏱ Tiempo de lectura: X minutos
+
+[GANCHO]
+1 o 2 líneas que detienen el scroll. Frase corta que incomoda, provoca o sorprende.
+
+[CONTEXTO]
+Qué está pasando, cuándo ocurrió y por qué importa ahora mismo. Datos concretos.
+
+[DESARROLLO — mínimo 3 puntos]
+✔ Punto 1: [título] — [desarrollo con 2-3 oraciones]
+✔ Punto 2: [título] — [desarrollo con 2-3 oraciones]
+✔ Punto 3: [título] — [desarrollo con 2-3 oraciones]
+
+[PREGUNTA INCOMODA]
+Una sola pregunta MUY específica al caso — NUNCA genérica.
+
+[CIERRE]
+Una sola frase contundente que resuma la postura de José Gabriel.
+
+[HASHTAGS]
+#AML #Compliance #[específico1] #[específico2] #[específico3]`;
+
+        function selectCommand(cmd) {
+            currentCommand = cmd;
+            document.querySelectorAll('.cmd-btn').forEach(btn => {
+                btn.className = 'cmd-btn px-3 py-2.5 rounded-xl border text-xs font-bold text-left bg-white text-slate-700 border-slate-200 hover:bg-slate-50';
+            });
+
+            const activeId = cmd === 'standard' ? 'cmd-standard' : 'cmd-' + cmd.replace('/', '');
+            const activeBtn = document.getElementById(activeId);
+            if (activeBtn) {
+                activeBtn.className = 'cmd-btn active px-3 py-2.5 rounded-xl border text-xs font-bold text-left bg-slate-900 text-white border-slate-900';
+            }
+        }
+
+        function setTopic(val) {
+            document.getElementById('topic-input').value = val;
+        }
+
+        async function generatePost() {
+            const topic = document.getElementById('topic-input').value.trim();
+            if (!topic) {
+                alert('Por favor escribe un tema o prompt para redactar.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-generate');
+            const display = document.getElementById('linkedin-output-display');
+
+            btn.innerHTML = `<span>⏳</span> Investigando datos 2025-2026 y Redactando...`;
+            btn.disabled = true;
+
+            display.innerHTML = `
+                <div class="flex flex-col items-center justify-center my-12 space-y-3 font-mono">
+                    <div class="w-8 h-8 border-4 border-slate-900 border-t-amber-400 rounded-full animate-spin"></div>
+                    <p class="text-xs text-slate-600 font-bold">Consultando fuentes web y aplicando estilo de José Gabriel Córdoba...</p>
+                </div>
+            `;
+
+            let userQuery = topic;
+            if (currentCommand === '/corto') {
+                userQuery = `/corto ${topic}`;
+            } else if (currentCommand === '/caso') {
+                userQuery = `/caso ${topic}`;
+            } else if (currentCommand === '/actualidad') {
+                userQuery = `/actualidad ${topic}`;
+            }
+
+            const useSearch = document.getElementById('web-search-toggle').checked;
+            const facts = document.getElementById('facts-input').value.trim();
+            if (facts) {
+                userQuery += `\n\nHECHOS VERIFICADOS (aportados por el usuario). Usa EXCLUSIVAMENTE estos datos como hechos concretos (cifras, fechas, montos, organismos, nombres). No agregues otras cifras, fechas ni afirmaciones sobre casos reales que no estén aquí; si falta un dato, escribe sin él. Cita la fuente dentro del texto, sin links:\n${facts}`;
+            }
+            verifiedMode = useSearch || !!facts;
+
+            if (!isConfigured()) {
+                display.innerHTML = `<div class="p-5 bg-amber-50 border border-amber-300 rounded-2xl text-xs text-amber-900 font-mono">
+                    🔑 Falta conectar el proxy de ChatGPT. Haz clic en el botón <strong>"🔑 Falta conexión"</strong> arriba a la derecha, pega la URL del proxy y tu token de acceso.</div>`;
+                btn.innerHTML = `<span>⚡</span> Generar Publicación Estilo José Gabriel`;
+                btn.disabled = false;
+                openApiModal();
+                return;
+            }
+
+            const today = new Date().toLocaleDateString('es-PA', { year: 'numeric', month: 'long', day: 'numeric' });
+            const instructions = SYSTEM_PROMPT + `\n\nFECHA ACTUAL: ${today}. Usa solo información vigente a esta fecha.`;
+
+            const errors = [];
+            let success = false;
+            let fatal = null;
+
+            for (const modelName of OPENAI_MODELS) {
+                try {
+                    const response = await fetch(getProxyUrl() + '/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-App-Token': getProxyToken() },
+                        body: JSON.stringify({ model: modelName, instructions: instructions, input: userQuery, use_search: useSearch })
+                    });
+                    const body = await response.json().catch(() => ({}));
+
+                    if (response.ok) {
+                        const text = stripLinks(extractText(body));
+                        if (text) {
+                            const sources = extractSources(body);
+                            rawGeneratedText = text;
+                            renderLinkedInPost(text);
+                            if (sources.length) {
+                                display.insertAdjacentHTML('beforeend', `<div class="mt-4 pt-3 border-t border-slate-200 text-[10px] font-mono text-slate-600 space-y-1">
+                                    <div class="font-bold text-slate-900">FUENTES CONSULTADAS (no se copian al post):</div>
+                                    ${sources.map(x => `<div>• <a href="${escapeHtml(x.url).replace(/"/g, '&quot;')}" target="_blank" rel="noopener" class="text-blue-600 underline">${escapeHtml(x.title)}</a></div>`).join('')}</div>`);
+                            }
+                            success = true;
+                            break;
+                        }
+                        errors.push({ model: modelName, status: 200, message: body.incomplete_details?.reason ? `Respuesta incompleta (${body.incomplete_details.reason})` : 'Respuesta vacía' });
+                        continue;
+                    }
+
+                    const errObj = body.error;
+                    const fromProxy = typeof errObj === 'string';
+                    const msg = fromProxy ? errObj : (errObj?.message || response.statusText || 'Error desconocido');
+                    const code = fromProxy ? '' : (errObj?.code || '');
+                    const entry = { model: modelName, status: response.status, message: msg, code: code, proxy: fromProxy };
+                    errors.push(entry);
+                    if (response.status === 401 || response.status === 403 || code === 'insufficient_quota') { fatal = entry; break; }
+                } catch (err) {
+                    errors.push({ model: modelName, status: 0, message: err.message });
+                }
+            }
+
+            if (!success) {
+                console.error("Errores por modelo:", errors);
+                const detail = errors.map(e => `<li><strong>${escapeHtml(e.model)}</strong> → HTTP ${e.status || 'red'}: ${escapeHtml(e.message)}</li>`).join('');
+                const allNetwork = errors.length && errors.every(e => e.status === 0);
+                const allRate = errors.length && errors.every(e => e.status === 429);
+                const box = 'p-5 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-900 font-mono space-y-2 shadow-md';
+                const retryBtn = useSearch ? `<button onclick="retryWithoutSearch()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-amber-200 rounded-xl font-bold transition">Reintentar sin búsqueda web</button>` : '';
+
+                if (allNetwork) {
+                    display.innerHTML = `<div class="${box}"><div class="font-bold text-sm">🌐 La petición no llegó a tu proxy</div>
+                        <ul class="list-disc list-inside text-[11px] space-y-1">
+                        <li>Revisa que la URL del proxy sea correcta (abre esa URL en el navegador: debe mostrar "status: ok").</li>
+                        <li>Si en tu servidor pusiste ALLOWED_ORIGIN, debe ser exactamente la dirección donde abres este HTML (si lo abres como archivo local, déjalo en *).</li>
+                        <li>Desactiva temporalmente VPN o bloqueadores de contenido.</li></ul>
+                        <p class="text-[11px]">Detalle técnico: ${escapeHtml(errors[0].message)}</p>
+                        <button onclick="openApiModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-amber-200 rounded-xl font-bold transition">🔑 Revisar conexión</button></div>`;
+                } else if (fatal && fatal.proxy) {
+                    display.innerHTML = `<div class="${box}"><div class="font-bold text-sm">🔑 Tu proxy rechazó la conexión (HTTP ${fatal.status})</div>
+                        <p>${escapeHtml(fatal.message)}</p>
+                        <button onclick="openApiModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-amber-200 rounded-xl font-bold transition">🔑 Revisar token</button></div>`;
+                } else if (fatal && fatal.code === 'insufficient_quota') {
+                    display.innerHTML = `<div class="p-5 bg-amber-50 border-2 border-amber-300 rounded-2xl text-xs text-amber-900 font-mono space-y-2 shadow-md">
+                        <div class="font-bold text-sm">⚠️ OpenAI: sin crédito o cuota agotada</div>
+                        <p>Revisa saldo y límites en platform.openai.com (la API se factura aparte de la suscripción de ChatGPT).</p>
+                        <p class="text-[11px]">Mensaje de OpenAI: ${escapeHtml(fatal.message)}</p></div>`;
+                } else if (fatal) {
+                    display.innerHTML = `<div class="${box}"><div class="font-bold text-sm">🔑 OpenAI rechazó la API Key del servidor (HTTP ${fatal.status})</div>
+                        <p>Mensaje de OpenAI: <em>${escapeHtml(fatal.message)}</em></p>
+                        <p class="text-[11px]">Las claves de OpenAI empiezan con sk-. Corrige la variable OPENAI_API_KEY en Cloudflare (Worker → Settings → Variables and Secrets) y vuelve a generar.</p></div>`;
+                } else if (allRate) {
+                    display.innerHTML = `<div class="p-5 bg-amber-50 border-2 border-amber-300 rounded-2xl text-xs text-amber-900 font-mono space-y-2 shadow-md">
+                        <div class="font-bold text-sm">⚠️ Límite de velocidad alcanzado (HTTP 429)</div>
+                        <p>Espera un minuto y reintenta.</p>
+                        <ul class="list-disc list-inside text-[11px]">${detail}</ul>${retryBtn}</div>`;
+                } else {
+                    display.innerHTML = `<div class="${box}"><div class="font-bold text-sm">❌ No se pudo completar la consulta</div>
+                        <p>Detalle devuelto por el servidor:</p>
+                        <ul class="list-disc list-inside text-[11px] space-y-1">${detail || '<li>Sin respuesta</li>'}</ul>${retryBtn}</div>`;
+                }
+            }
+
+            btn.innerHTML = `<span>⚡</span> Generar Publicación Estilo José Gabriel`;
+            btn.disabled = false;
+        }
+
+        function retryWithoutSearch() {
+            document.getElementById('web-search-toggle').checked = false;
+            generatePost();
+        }
+
+        function renderLinkedInPost(text) {
+            const display = document.getElementById('linkedin-output-display');
+            
+            // Format hashtags and bullets
+            let formattedHTML = escapeHtml(text)
+                .replace(/#(\w+)/g, '<span class="hashtag">#$1</span>')
+                .replace(/✔/g, '<span class="bullet">✔</span>')
+                .replace(/👉/g, '<span class="bullet">👉</span>');
+
+            display.innerHTML = formattedHTML;
+            if (!verifiedMode) {
+                display.innerHTML = `<div class="mb-3 p-3 bg-amber-50 border border-amber-300 rounded-xl text-amber-900 font-mono text-[11px]">⚠️ Generado SIN búsqueda web ni hechos verificados: cifras y casos pueden ser imprecisos. Verifica cada dato antes de publicar. (Este aviso no se copia.)</div>` + display.innerHTML;
+            }
+
+            // Audit word count & reading time
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const readTime = Math.ceil(words / 180);
+
+            document.getElementById('badge-words').innerText = `${words} Palabras`;
+            document.getElementById('badge-time').innerText = `⏱ ${readTime} min lectura`;
+
+            // Run Compliance Guardrails Check
+            auditRules(text, words);
+        }
+
+        function auditRules(text, words) {
+            // 1. Check URLs
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const hasUrls = urlRegex.test(text);
+            const checkUrl = document.getElementById('check-url');
+            if (!hasUrls) {
+                checkUrl.className = "p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1";
+                checkUrl.innerHTML = `<span>✓</span> Sin URLs en texto`;
+            } else {
+                checkUrl.className = "p-2 rounded-xl bg-rose-100 text-rose-800 font-bold flex items-center gap-1";
+                checkUrl.innerHTML = `<span>⚠️</span> URL Detectada (Eliminar)`;
+            }
+
+            // 2. Length check
+            const checkLength = document.getElementById('check-length');
+            if (currentCommand === '/corto' && words <= 220) {
+                checkLength.className = "p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1";
+                checkLength.innerHTML = `<span>✓</span> Corto (${words} w)`;
+            } else if (words >= 350 && words <= 650) {
+                checkLength.className = "p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1";
+                checkLength.innerHTML = `<span>✓</span> Rango Óptimo (${words} w)`;
+            } else {
+                checkLength.className = "p-2 rounded-xl bg-amber-100 text-amber-800 font-bold flex items-center gap-1";
+                checkLength.innerHTML = `<span>⚠️</span> Ajustar Longitud (${words} w)`;
+            }
+
+            // 3. Hashtags count
+            const hashtags = (text.match(/#\w+/g) || []).length;
+            const checkHashtags = document.getElementById('check-hashtags');
+            if (hashtags <= 5 && hashtags > 0) {
+                checkHashtags.className = "p-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1";
+                checkHashtags.innerHTML = `<span>✓</span> ${hashtags} Hashtags`;
+            } else {
+                checkHashtags.className = "p-2 rounded-xl bg-rose-100 text-rose-800 font-bold flex items-center gap-1";
+                checkHashtags.innerHTML = `<span>⚠️</span> ${hashtags} Hashtags (Máx 5)`;
+            }
+        }
+
+        function copyToClipboard() {
+            if (!rawGeneratedText) return;
+            navigator.clipboard.writeText(rawGeneratedText);
+
+            const btn = document.getElementById('btn-copy-post');
+            const orig = btn.innerHTML;
+            btn.innerHTML = `<span>✓</span> ¡Texto Copiado al Portapapeles!`;
+            btn.className = "flex-1 py-3 px-4 rounded-xl bg-emerald-600 text-white text-xs font-bold transition flex items-center justify-center gap-2 font-mono shadow-md";
+
+            setTimeout(() => {
+                btn.innerHTML = orig;
+                btn.className = "flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-200 text-xs font-bold transition flex items-center justify-center gap-2 font-mono shadow-md";
+            }, 2000);
+        }
+
+        function downloadAsTxt() {
+            if (!rawGeneratedText) return;
+            const blob = new Blob([rawGeneratedText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `post_linkedin_jose_gabriel_${Date.now()}.txt`;
+            link.click();
+        }
+
+        // Modal Handlers
+        function openApiModal() {
+            document.getElementById('api-modal').classList.remove('hidden');
+            document.getElementById('api-modal').classList.add('flex');
+            document.getElementById('proxy-url-input').value = getProxyUrl();
+            document.getElementById('proxy-token-input').value = getProxyToken();
+        }
+
+        function closeApiModal() {
+            document.getElementById('api-modal').classList.add('hidden');
+            document.getElementById('api-modal').classList.remove('flex');
+        }
+
+        function saveApiKey() {
+            const url = document.getElementById('proxy-url-input').value.trim();
+            const tok = document.getElementById('proxy-token-input').value.trim();
+            if (url) localStorage.setItem('proxy_url', url); else localStorage.removeItem('proxy_url');
+            if (tok) localStorage.setItem('proxy_token', tok); else localStorage.removeItem('proxy_token');
+            updateKeyStatus();
+            closeApiModal();
+        }
+
+        // Inicializar estado al cargar
+        window.addEventListener('DOMContentLoaded', () => {
+            localStorage.removeItem('user_gemini_key'); // limpia la clave de Gemini guardada antes
+            updateKeyStatus();
+        });
+    </script>
+</body>
+</html>
